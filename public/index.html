@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JobPilot — your overnight job-hunting bot</title>
+<title>JobPilot — your job search, running overnight</title>
 <link rel="stylesheet" href="/style.css">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧭</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='36' fill='%23c9d3e2'/><ellipse cx='38' cy='36' rx='13' ry='9' fill='%23ffffff' opacity='.85'/></svg>">
 </head>
 <body>
 <div class="bg-glow"></div>
@@ -13,7 +13,7 @@
 <!-- ============ AUTH VIEW ============ -->
 <main id="authView" class="auth-wrap hidden">
   <div class="auth-card">
-    <div class="logo">🧭 JobPilot</div>
+    <div class="logo"><svg class="mark" width="34" height="34" viewBox="0 0 48 48" fill="none" aria-hidden="true"><defs><radialGradient id="orbA" cx="35%" cy="30%" r="85%"><stop offset="0%" stop-color="#ffffff"/><stop offset="45%" stop-color="#c9d3e2"/><stop offset="100%" stop-color="#77839a"/></radialGradient></defs><circle cx="24" cy="24" r="13" fill="url(#orbA)"/><path d="M4 31c10 6 30 6 40-3" stroke="#aeb9cd" stroke-width="2.4" stroke-linecap="round" opacity=".85"/><path d="M40 10l1.7 3.6 3.6 1.7-3.6 1.7L40 20.6l-1.7-3.6-3.6-1.7 3.6-1.7z" fill="#e8eef8"/></svg><span class="word">JobPilot</span></div>
     <p class="tagline">Your personal job-hunting bot. It scans free job sources overnight, scores matches against your profile, and drafts your cover letters, tailored resumes and screening answers.</p>
     <div class="tabs">
       <button id="tabLogin" class="tab active" type="button">Sign in</button>
@@ -36,7 +36,7 @@
 <!-- ============ APP VIEW ============ -->
 <div id="appView" class="hidden">
   <header class="topbar">
-    <div class="logo small">🧭 JobPilot</div>
+    <div class="logo small"><svg class="mark" width="24" height="24" viewBox="0 0 48 48" fill="none" aria-hidden="true"><defs><radialGradient id="orbB" cx="35%" cy="30%" r="85%"><stop offset="0%" stop-color="#ffffff"/><stop offset="45%" stop-color="#c9d3e2"/><stop offset="100%" stop-color="#77839a"/></radialGradient></defs><circle cx="24" cy="24" r="13" fill="url(#orbB)"/><path d="M4 31c10 6 30 6 40-3" stroke="#aeb9cd" stroke-width="2.4" stroke-linecap="round" opacity=".85"/></svg><span class="word">JobPilot</span></div>
     <nav class="nav">
       <button class="navbtn active" data-view="dashboard" type="button">Dashboard</button>
       <button class="navbtn" data-view="jobs" type="button">Matches</button>
@@ -45,7 +45,7 @@
     </nav>
     <div class="top-actions">
       <span id="whoami" class="whoami"></span>
-      <button id="runNowBtn" class="btn accent" type="button">↻ Run scan now</button>
+      <button id="runNowBtn" class="btn accent" type="button">Run scan now</button>
       <button id="logoutBtn" class="btn ghost" type="button">Log out</button>
     </div>
   </header>
@@ -125,7 +125,7 @@
     <p id="mMeta" class="muted"></p>
     <p><a id="mLink" href="#" target="_blank" rel="noopener noreferrer">Open the posting ↗</a></p>
     <div class="row">
-      <button id="mGenerate" class="btn accent" type="button">✍ Generate cover letter, resume &amp; answers</button>
+      <button id="mGenerate" class="btn accent" type="button">Generate cover letter, resume &amp; answers</button>
       <button id="mTrack" class="btn primary" type="button">+ Track application</button>
     </div>
     <div class="tabs">

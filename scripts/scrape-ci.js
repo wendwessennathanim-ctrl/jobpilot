@@ -83,13 +83,13 @@ async function main() {
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>JobPilot — nightly report</title>
 <style>
-body{background:#0b0f1a;color:#e8ecf6;font-family:ui-sans-system,-apple-system,"Segoe UI",Roboto,sans-serif;margin:0;padding:28px 16px 60px}
-main{max-width:860px;margin:0 auto}h1{font-size:1.7rem}.muted{color:#93a0bd}
-.job{display:flex;gap:14px;background:#131a2c;border:1px solid #24304f;border-radius:14px;padding:16px;margin:12px 0}
-.score{flex:none;width:52px;height:52px;border-radius:12px;background:#38d6a4;color:#06231a;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:1.15rem}
-h3{margin:0 0 4px;font-size:1rem}a{color:#6c8cff;text-decoration:none}.meta,.reasons{color:#93a0bd;margin:3px 0;font-size:.88rem}.flags{color:#ffb454;font-size:.82rem;margin:3px 0}
+body{background:radial-gradient(900px 420px at 80% -10%,rgba(126,166,216,.12),transparent 60%),#05070c;color:#eef1f8;font-family:"Avenir Next","Segoe UI",ui-sans-system,-apple-system,Roboto,sans-serif;margin:0;padding:28px 16px 60px}
+main{max-width:860px;margin:0 auto}h1{font-size:1.7rem;letter-spacing:-.01em;background:linear-gradient(180deg,#fdfdff 10%,#d7dee9 40%,#97a3ba 55%,#e9eef7 65%,#5f6c84);-webkit-background-clip:text;background-clip:text;color:transparent}.muted{color:#8b96b0}
+.job{display:flex;gap:14px;background:linear-gradient(180deg,#121a2c,#0d1320);border:1px solid #232f49;border-radius:14px;padding:16px;margin:12px 0}
+.score{flex:none;width:52px;height:52px;border-radius:50%;background:radial-gradient(circle at 32% 28%,#fff 0%,rgba(255,255,255,0) 42%),linear-gradient(160deg,#eef2f9,#a7b3c8 55%,#d9e1ee);border:1px solid #7887a0;box-shadow:inset 0 -6px 12px rgba(70,84,110,.45),inset 0 4px 7px rgba(255,255,255,.85);color:#0a0f1a;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:1.15rem}
+h3{margin:0 0 4px;font-size:1rem}a{color:#7ea6d8;text-decoration:none}.meta,.reasons{color:#8b96b0;margin:3px 0;font-size:.88rem}.flags{color:#f2c078;font-size:.82rem;margin:3px 0}
 </style></head><body><main>
-<h1>🧭 JobPilot nightly report</h1>
+<h1>JobPilot nightly report</h1>
 <p class="muted">Generated ${esc(now)} · ${result.found} postings scanned · ${result.newJobs} new · top score ${result.topScore}</p>
 ${rows || '<p>No matches above the minimum score in this run.</p>'}
 </main></body></html>`;

@@ -146,7 +146,7 @@ $('runNowBtn').addEventListener('click', async () => {
     toast(`Scan done: ${r.found} postings found, ${r.newJobs} new, top score ${r.topScore}.`);
     await Promise.all([loadDashboard(), loadJobs()]);
   } catch (err) { toast(err.message); }
-  btn.disabled = false; btn.textContent = '↻ Run scan now';
+  btn.disabled = false; btn.textContent = 'Run scan now';
 });
 
 /* ------------------------------ job modal ------------------------------ */
@@ -192,7 +192,7 @@ $('mGenerate').addEventListener('click', async () => {
     showDoc();
     toast('Drafts ready — review them, then submit on the employer’s site yourself.');
   } catch (err) { toast(err.message); }
-  btn.disabled = false; btn.textContent = '✍ Generate cover letter, resume & answers';
+  btn.disabled = false; btn.textContent = 'Generate cover letter, resume & answers';
 });
 $('mTrack').addEventListener('click', async () => {
   await api('/api/applications', {
@@ -290,6 +290,15 @@ $('saveProfileBtn').addEventListener('click', async () => {
   $('minScore').value = $('pfMinScore').value;
   toast('Profile saved');
 });
+
+/* --------------------- pointer sheen on cards --------------------- */
+document.addEventListener('pointermove', (e) => {
+  const t = e.target.closest ? e.target.closest('.job') : null;
+  if (!t) return;
+  const r = t.getBoundingClientRect();
+  t.style.setProperty('--mx', `${((e.clientX - r.left) / r.width) * 100}%`);
+  t.style.setProperty('--my', `${((e.clientY - r.top) / r.height) * 100}%`);
+}, { passive: true });
 
 /* -------------------------------- boot -------------------------------- */
 (async () => {

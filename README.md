@@ -25,7 +25,7 @@ node server.js
 # open http://localhost:8080
 ```
 
-1. Create your account (first account is seeded with Nathi's profile: CET-CS at Algonquin, 3.7 GPA, Dean's Honours, plus the Meta Ads / Nathi Media track — edit it in **Settings**).
+1. Create your account (first account is seeded with Nathi's profile: CET-CS at Algonquin, GPA 3.77, Dean's Honours, CI/CD-focused from his resume — edit it in **Settings**).
 2. Paste your full general resume in **Settings → General resume**.
 3. Press **↻ Run scan now** and wait ~10 seconds. Or just leave it: the scheduler runs it at your chosen hour (default 2 a.m. server time) every day.
 4. Open a match → **Generate** → copy the drafts into the employer's application.
