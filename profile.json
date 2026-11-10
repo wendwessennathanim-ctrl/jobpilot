@@ -1,1 +1,56 @@
-{"headline":"Computer Engineering Technology student at Algonquin College (GPA 3.77, Dean's Honours List) focused on CI/CD and build automation — Linux administration, Bash/Python scripting, GitHub Actions, Jenkins, and full-stack development (Spring Boot, React).","name":"Nathanim Wubete","prefs":{"extraFeeds":[],"greenhouseBoards":[],"leverCompanies":["magnetforensics"],"minScore":40},"resume_text":"","skills":["Bash","Python","Java","JavaScript","C","C++","SQL","Linux","Git","GitHub Actions","Jenkins","CI/CD","Spring Boot","React","Node.js","REST APIs","n8n","Maven","Wireshark","TCP/IP","HTML5","CSS3","Meta Ads","Facebook Ads","Media Buying","Lead Generation"]}
+{
+  "name": "Nathanim Wubete",
+  "headline": "Computer Engineering Technology student at Algonquin College (GPA 3.77, Dean's Honours List) focused on CI/CD and build automation — Linux administration, Bash/Python scripting, GitHub Actions, Jenkins, and full-stack development (Spring Boot, React).",
+  "skills": [
+    "Bash",
+    "Python",
+    "Java",
+    "JavaScript",
+    "C",
+    "C++",
+    "SQL",
+    "Linux",
+    "Git",
+    "GitHub Actions",
+    "Jenkins",
+    "CI/CD",
+    "Spring Boot",
+    "React",
+    "Node.js",
+    "REST APIs",
+    "n8n",
+    "Maven",
+    "npm",
+    "Wireshark",
+    "TCP/IP",
+    "HTML5",
+    "CSS3",
+    "Agile"
+  ],
+  "resume_text": "",
+  "prefs": {
+    "minScore": 40,
+    "titleKeywords": [
+      "software developer co-op",
+      "software engineer co-op",
+      "co-op",
+      "coop",
+      "intern",
+      "student",
+      "junior developer",
+      "junior software",
+      "devops",
+      "ci/cd",
+      "automation",
+      "build engineer",
+      "release engineer",
+      "systems administrator",
+      "linux administrator"
+    ],
+    "leverCompanies": [
+      "magnetforensics"
+    ],
+    "greenhouseBoards": [],
+    "extraFeeds": []
+  }
+}
