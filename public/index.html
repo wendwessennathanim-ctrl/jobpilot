@@ -41,6 +41,7 @@
       <button class="navbtn active" data-view="dashboard" type="button">Dashboard</button>
       <button class="navbtn" data-view="jobs" type="button">Matches</button>
       <button class="navbtn" data-view="applications" type="button">Applications</button>
+      <button class="navbtn" data-view="scholarships" type="button">Scholarships</button>
       <button class="navbtn" data-view="settings" type="button">Settings</button>
     </nav>
     <div class="top-actions">
@@ -87,6 +88,26 @@
       <div id="appBoard" class="board"></div>
     </section>
 
+    <!-- Scholarships -->
+    <section id="view-scholarships" class="view hidden">
+      <div class="row between">
+        <h2>Scholarships matched to you</h2>
+        <span class="row">
+          <label class="inline">Minimum score
+            <input id="schMinScore" type="number" min="0" max="100" value="40">
+          </label>
+          <button id="schScanBtn" class="btn accent" type="button">Scan scholarships</button>
+        </span>
+      </div>
+      <p class="muted">Scored against your scholarship profile (Settings): GPA, nationality, residency status, school, program and activities. Awards you can't actually get — citizens-only, GPA above yours, deadlines passed — are filtered to zero with the reason shown. Lower the minimum score to see them.</p>
+      <div id="schList" class="job-list"></div>
+      <div class="row between" style="margin-top:26px">
+        <h2>My scholarship tracker</h2>
+        <button id="addSchAppBtn" class="btn accent" type="button">+ Add manually</button>
+      </div>
+      <div id="schBoard" class="board"></div>
+    </section>
+
     <!-- Settings -->
     <section id="view-settings" class="view hidden">
       <div class="card">
@@ -112,6 +133,28 @@
         <label>Extra RSS feeds (comma separated — e.g. a Canada Job Bank search feed) <input id="pfFeeds" type="text"></label>
         <button id="saveProfileBtn" class="btn primary" type="button">Save profile &amp; preferences</button>
         <p id="settingsMsg" class="muted"></p>
+      </div>
+      <div class="card">
+        <h2>Scholarship profile</h2>
+        <p class="muted">Scholarships are matched on these facts — grades, nationality, residency status, school, program and activities. Keep them accurate; wrong facts here mean wrong matches and wrong essay drafts.</p>
+        <label>Your GPA (4.0 scale) <input id="pfSchGpa" type="number" step="0.01" min="0" max="4.3"></label>
+        <label>Nationality <input id="pfSchNationality" type="text"></label>
+        <label>Residency status
+          <select id="pfSchResidency">
+            <option value="international">International student (study permit)</option>
+            <option value="citizen">Canadian citizen</option>
+            <option value="permanent-resident">Permanent resident</option>
+            <option value="other">Other</option>
+          </select>
+        </label>
+        <label>School <input id="pfSchSchool" type="text"></label>
+        <label>Program <input id="pfSchProgram" type="text"></label>
+        <label>Level (e.g. college diploma) <input id="pfSchLevel" type="text"></label>
+        <label>Activities, leadership, volunteering, work (used for matching and essays)
+          <textarea id="pfSchActivities" rows="4"></textarea>
+        </label>
+        <label class="inline"><input id="pfSchNeed" type="checkbox"> I have financial need (most bursaries are need-based)</label>
+        <label>Scholarship RSS feeds (comma separated, optional) <input id="pfSchFeeds" type="text"></label>
       </div>
     </section>
   </main>
@@ -142,6 +185,34 @@
       </span>
     </div>
     <pre id="mBody" class="doc"></pre>
+  </div>
+</div>
+
+<!-- ============ SCHOLARSHIP DETAIL MODAL ============ -->
+<div id="schModal" class="modal hidden">
+  <div class="modal-card">
+    <button id="schModalClose" class="btn ghost modal-x" type="button">✕</button>
+    <h2 id="sTitle"></h2>
+    <p id="sMeta" class="muted"></p>
+    <p><a id="sLink" href="#" target="_blank" rel="noopener noreferrer">Open the official page ↗</a></p>
+    <div class="row">
+      <button id="sGenerate" class="btn accent" type="button">Generate essay, statement &amp; checklist</button>
+      <button id="sTrack" class="btn primary" type="button">+ Track application</button>
+    </div>
+    <div class="tabs">
+      <button class="tab stab active" data-doc="desc" type="button">Details &amp; criteria</button>
+      <button class="tab stab" data-doc="essay" type="button">Essay draft</button>
+      <button class="tab stab" data-doc="statement" type="button">Personal statement</button>
+      <button class="tab stab" data-doc="checklist" type="button">Checklist</button>
+    </div>
+    <div class="row between">
+      <span id="sScore" class="muted"></span>
+      <span class="row">
+        <button id="sPdf" class="btn ghost" type="button">Download PDF</button>
+        <button id="sCopy" class="btn ghost" type="button">Copy text</button>
+      </span>
+    </div>
+    <pre id="sBody" class="doc"></pre>
   </div>
 </div>
 

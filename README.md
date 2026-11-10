@@ -56,7 +56,28 @@ Any Node host works; the app is one process + one SQLite file.
 
 - **Render** (free tier): New → Web Service → connect this repo → Build command: *(none needed)* → Start command: `node server.js`. Free instances sleep when idle; the nightly GitHub report still covers you.
 - Set env var `COOKIE_SECURE=1` when the host serves HTTPS so session cookies are marked Secure.
-- Data resets on some free hosts when they redeploy — export your tracker by keeping the repo report as your source of truth, or use a host with a persistent disk.
+
+## Data persistence — IMPORTANT on free hosts
+
+Free hosts (Render included) have an **ephemeral disk**: every redeploy wipes local files, including the app's SQLite database. Without backup that means accounts disappear and logins fail after a deploy. JobPilot fixes this with automatic backup to a GitHub repo you own:
+
+1. Create a **private** GitHub repo, e.g. `jobpilot-data` (check "Add a README" so it has a `main` branch). The backup file contains your profile and your *hashed* login record — private repo only, never the public app repo.
+2. Create a **fine-grained personal access token** (GitHub → Settings → Developer settings → Fine-grained tokens): repository access = only `jobpilot-data`; permission **Contents: Read and write**; nothing else.
+3. On your host, set two environment variables:
+   - `JOBPILOT_BACKUP_REPO=youruser/jobpilot-data`
+   - `JOBPILOT_BACKUP_TOKEN=<the token>`
+4. Deploy. From then on, every change is snapshotted to that repo within seconds, and on boot the app restores the snapshot automatically if its local database is empty. Your login, profile, trackers and documents survive redeploys. (Optional: `JOBPILOT_BACKUP_FILE`, `JOBPILOT_BACKUP_BRANCH`.)
+
+If the variables are not set, the app still works — it just is not durable on a free host, and it logs a warning at startup.
+
+## Scholarships page
+
+The Scholarships tab works like the jobs side, for awards:
+
+- **Sources**: a hand-verified curated list, award links from your college's own financial-aid pages, and any RSS feeds you add in Settings → Scholarship profile.
+- **Matching** uses your scholarship profile — GPA, nationality, residency status (international / citizen / PR), school, program, level and activities. Hard gates score 0 with the reason shown: citizens/PR-only awards for international students, minimum GPA above yours, passed deadlines, graduate-only awards.
+- **Essay detection**: awards requiring an essay or statement are flagged, and **Generate** drafts the essay (using the posting's own prompt when one is stated), a general personal statement, and an application checklist (documents, deadline, steps). Drafts use only facts from your profile — personalise them; committees read for your voice.
+- **Tracker**: Saved → Drafting → Submitted → Awarded/Rejected/Closed, mirroring the job application board.
 
 ## Sources (all free, no keys)
 

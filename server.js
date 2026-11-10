@@ -22,9 +22,13 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { db } = require('./lib/db');
 const auth = require('./lib/auth');
+const backup = require('./lib/backup');
 const { runPipeline, getProfile, topMatches } = require('./lib/pipeline');
 const { generateAll } = require('./lib/generate');
 const { DEFAULT_PREFS } = require('./lib/match');
+const { runScholarshipScan, topScholarships } = require('./lib/scholarship-pipeline');
+const { generateScholarshipDocs } = require('./lib/scholarship-generate');
+const { DEFAULT_SCHOLARSHIP } = require('./lib/scholarship-match');
 
 const PORT = process.env.PORT || 8080;
 const PUBLIC_DIR = path.join(__dirname, 'public');
@@ -36,9 +40,22 @@ const MAX_BODY = 512 * 1024;
 const SEED_PROFILE = {
   name: "Nathanim Wubete",
   headline: "Computer Engineering Technology student at Algonquin College (GPA 3.77, Dean's Honours List) focused on CI/CD and build automation — Linux administration, Bash/Python scripting, GitHub Actions, Jenkins, and full-stack development (Spring Boot, React).",
-  skills: ["Bash","Python","Java","JavaScript","C","C++","SQL","Linux","Git","GitHub Actions","Jenkins","CI/CD","Spring Boot","React","Node.js","REST APIs","n8n","Maven","Wireshark","TCP/IP","HTML5","CSS3"],
-  resume_text: "NATHANIM WUBETE\n(613) 791-2710 · wube0004@algonquinlive.com · Ottawa, ON · LinkedIn · Github · Credly\n\nPROFILE\nComputer Engineering Technology student at Algonquin College (GPA 3.77, Dean's Honours List) focused on CI/CD and build automation, with hands-on experience in Linux system administration, Bash and Python scripting, and Git-based workflows. Currently building an AI-assisted, self-healing CI/CD pipeline with GitHub Actions that diagnoses failed builds and proposes fixes automatically. Seeking a CI/CD role where I can apply my scripting, systems, and full-stack skills to build reliable, automated delivery pipelines.\n\nTECHNICAL SKILLS\nLanguages: Bash/Shell, Java, Python, JavaScript, C/C++, SQL, HTML5, CSS3\nOS: Linux (Ubuntu), Windows, macOS\nCI/CD & Automation: Jenkins, GitHub Actions, GitHub Secrets, n8n, Maven, npm, Bash scripting, Git/GitHub\nFrameworks & Libraries: Spring Boot, React, Vite, axios, react-router-dom, REST APIs\nTools: IntelliJ, VS Code, Eclipse, Wireshark, Cisco Packet Tracer\nConcepts: CI/CD, Build & Test Automation, Access control and user authorization, Full-Stack Development, RESTful APIs & Client-Server Architecture, Object-Oriented Design, Relational Databases (SQL), Agile, AI-Assisted Development\nNetworking: TCP/IP, OSI Model, Static Routing, NAT, IPv4/IPv6, Optical Networking Fundamentals, Wireshark Packet Analysis\nAI/LLMs: Claude Code, Copilot, ChatGPT Codex, Gemini, OpenAI API, RAG agents\nCurrently expanding: Node.js, PHP, jQuery, Automation Anywhere, RPA frameworks\n\nSOFT SKILLS\n- Collaborate effectively with team members and communicate clearly across technical and non-technical audiences\n- Demonstrated strong attention to detail in problem-solving and deliverables\n- Can quickly acquire new technical skills and adapt to unfamiliar tools and environments\n- Apply practical, solution-oriented approaches to troubleshooting and development\n- Maintained strong organizational skills and managed time effectively across multiple priorities\n- Can take initiative and follow through reliably on assigned tasks\n\nEDUCATION\nComputer Engineering Technology – Computing Science | Algonquin College, Sept. 2025 – Expected 2028\n- GPA 3.77 / 4.0 — Dean's Honours List 2025\n- Coursework: OOP (Java), Operating Systems (Linux), Networking, Technical Communications, Web Programming, Data Structures\n\nPROJECTS\nSelf-Healing CI/CD Pipeline | GitHub Actions, n8n, OpenAI API, Node.js/Express, Oct. 2026 – Present\n- Building an automated pipeline that detects failed builds, uses an LLM to analyze error logs and generate code patches, and opens pull requests with the proposed fix.\n- Integrating GitHub webhooks with n8n workflows and automated email alerts, with API keys secured through GitHub Secrets.\n\nJobBot — Full-Stack Job Automation App | Java, Spring Boot, React, Vite, REST APIs, 2026 – Present\n- Actively building a full-stack application to automate job search workflows; frontend built with React and Vite using axios for REST API communication and react-router-dom for client-side routing.\n- Designed a RESTful Spring Boot backend with a layered architecture (model, controller, service, repository) backed by an H2 in-memory database; managed end-to-end with npm and Maven.\n\nLinux User Management Automation Script | Bash, Linux Admin, Jan. 2026\n- Built a menu-driven Bash script automating Linux user account administration (add, modify, delete) across multiple groups with full error handling, cutting manual administration time by ~80%.\n\nNetwork Infrastructure & Protocol Analysis | Packet Tracer, Wireshark, Feb. 2026\n- Designed and verified 4-segment Cisco/Linksys networks (static routes, NAT, IPv4/IPv6) to analyze and optimize network performance; traced ARP, ICMP, and TFTP flows across OSI Layers 2–7 using Wireshark deep-packet inspection.\n\nTCP Socket Client–Server Messaging App | Java, Networking, Jan. 2026\n- Built a TextServer and TextClient over TCP port 18990; managed the full 3-way handshake lifecycle and graceful teardown using Wireshark to verify 0% packet loss.\n\nWard Tax Prediction — Linear Regression Engine | Java, OOP, Feb. 2026\n- Parsed multi-year ward CSV data and applied linear regression to forecast municipal tax assessments within a multi-class Java architecture (abstract classes, inheritance, polymorphism).\n- Interactive CLI delivers predictions in under 1 second; lets users estimate taxes for any new ward on demand.\n\nPersonal Portfolio Website | HTML, CSS, JavaScript, June 2026\n- Designed and built a 4-page responsive, WCAG-aligned portfolio site with a JavaScript-driven project slideshow and real-time form validation.\n\nWORK EXPERIENCE & LEADERSHIP\nIBM Z Student Ambassador & Club Leader | Algonquin College, Dec. 2025 – Present\n- Selected as an IBM Z Student Ambassador after independently completing IBM Z Xplore Fundamentals and Concepts badges; led the IBM Z Club, promoting mainframe technologies and enterprise architecture (z/OS, JCL) to fellow students.\n- Facilitated workshops and hands-on sessions, helping students earn accredited IBM Z credentials, strengthening peer engagement with mainframe computing.\n\nCashier & Line Cook | McDonald's, Ottawa, Nov. 2025 – Present\n- Maintained 100% food safety compliance during peak service; communicated efficiently under pressure in a fast-paced team environment.\n- Collaborated with team members to meet fast-paced service demands and minimize wait times.\n- Managed multiple tasks simultaneously, including order taking, food preparation, and order assembly.\n- Adapted quickly to changing priorities, including peak hours and shifting responsibilities.\n- Consistently met performance expectations for speed, accuracy, and teamwork.\n\nCERTIFICATIONS\nIBM Z Xplore Fundamentals Badge (2026)\nIBM Z Xplore Concepts Badge (2026)",
-  prefs: { ...DEFAULT_PREFS },
+  skills: ["Bash","Python","Java","JavaScript","C","C++","SQL","Linux","Git","GitHub Actions","Jenkins","CI/CD","Spring Boot","React","Node.js","REST APIs","n8n","Maven","npm","Wireshark","TCP/IP","HTML5","CSS3","Agile"],
+  resume_text: "NATHANIM WUBETE\n(613) 791-2710 · wube0004@algonquinlive.com · Ottawa, ON · LinkedIn: linkedin.com/in/nathanim-wubete · Github · Credly\n\nPROFILE\nComputer Engineering Technology student at Algonquin College (GPA 3.77, Dean's Honours List) focused on CI/CD and build automation, with hands-on experience in Linux system administration, Bash and Python scripting, and Git-based workflows. Currently building an AI-assisted, self-healing CI/CD pipeline with GitHub Actions that diagnoses failed builds and proposes fixes automatically. Seeking a CI/CD role where I can apply my scripting, systems, and full-stack skills to build reliable, automated delivery pipelines.\n\nTECHNICAL SKILLS\nLanguages: Bash/Shell, Java, Python, JavaScript, C/C++, SQL, HTML5, CSS3\nOS: Linux (Ubuntu), Windows, macOS\nCI/CD & Automation: Jenkins, GitHub Actions, GitHub Secrets, n8n, Maven, npm, Bash scripting, Git/GitHub\nFrameworks & Libraries: Spring Boot, React, Vite, axios, react-router-dom, REST APIs\nTools: IntelliJ, VS Code, Eclipse, Wireshark, Cisco Packet Tracer\nConcepts: CI/CD, Build & Test Automation, Access control and user authorization, Full-Stack Development, RESTful APIs & Client-Server Architecture, Object-Oriented Design, Relational Databases (SQL), Agile, AI-Assisted Development\nNetworking: TCP/IP, OSI Model, Static Routing, NAT, IPv4/IPv6, Optical Networking Fundamentals, Wireshark Packet Analysis\nAI/LLMs: Claude Code, Copilot, ChatGPT Codex, Gemini, OpenAI API, RAG agents\nCurrently expanding: Node.js, PHP, jQuery, Automation Anywhere, RPA frameworks\n\nSOFT SKILLS\n- Collaborate effectively with team members and communicate clearly across technical and non-technical audiences\n- Demonstrated strong attention to detail in problem-solving and deliverables\n- Can quickly acquire new technical skills and adapt to unfamiliar tools and environments\n- Apply practical, solution-oriented approaches to troubleshooting and development\n- Maintained strong organizational skills and managed time effectively across multiple priorities\n- Can take initiative and follow through reliably on assigned tasks\n\nEDUCATION\nComputer Engineering Technology – Computing Science | Algonquin College, Sept. 2025 – Expected 2028\n- GPA 3.77 / 4.0 — Dean's Honours List 2025\n- Coursework: OOP (Java), Operating Systems (Linux), Networking, Technical Communications, Web Programming, Data Structures\n\nPROJECTS\nSelf-Healing CI/CD Pipeline | GitHub Actions, n8n, OpenAI API, Node.js/Express, Oct. 2026 – Present\n- Building an automated pipeline that detects failed builds, uses an LLM to analyze error logs and generate code patches, and opens pull requests with the proposed fix.\n- Integrating GitHub webhooks with n8n workflows and automated email alerts, with API keys secured through GitHub Secrets.\n\nJobBot — Full-Stack Job Automation App | Java, Spring Boot, React, Vite, REST APIs, 2026 – Present\n- Actively building a full-stack application to automate job search workflows; frontend built with React and Vite using axios for REST API communication and react-router-dom for client-side routing.\n- Designed a RESTful Spring Boot backend with a layered architecture (model, controller, service, repository) backed by an H2 in-memory database; managed end-to-end with npm and Maven.\n\nLinux User Management Automation Script | Bash, Linux Admin, Jan. 2026\n- Built a menu-driven Bash script automating Linux user account administration (add, modify, delete) across multiple groups with full error handling, cutting manual administration time by ~80%.\n\nNetwork Infrastructure & Protocol Analysis | Packet Tracer, Wireshark, Feb. 2026\n- Designed and verified 4-segment Cisco/Linksys networks (static routes, NAT, IPv4/IPv6) to analyze and optimize network performance; traced ARP, ICMP, and TFTP flows across OSI Layers 2–7 using Wireshark deep-packet inspection.\n\nTCP Socket Client–Server Messaging App | Java, Networking, Jan. 2026\n- Built a TextServer and TextClient over TCP port 18990; managed the full 3-way handshake lifecycle and graceful teardown using Wireshark to verify 0% packet loss.\n\nWard Tax Prediction — Linear Regression Engine | Java, OOP, Feb. 2026\n- Parsed multi-year ward CSV data and applied linear regression to forecast municipal tax assessments within a multi-class Java architecture (abstract classes, inheritance, polymorphism).\n- Interactive CLI delivers predictions in under 1 second; lets users estimate taxes for any new ward on demand.\n\nPersonal Portfolio Website | HTML, CSS, JavaScript, June 2026\n- Designed and built a 4-page responsive, WCAG-aligned portfolio site with a JavaScript-driven project slideshow and real-time form validation.\n\nWORK EXPERIENCE & LEADERSHIP\nIBM Z Student Ambassador & Club Leader | Algonquin College, Dec. 2025 – Present\n- Selected as an IBM Z Student Ambassador after independently completing IBM Z Xplore Fundamentals and Concepts badges; led the IBM Z Club, promoting mainframe technologies and enterprise architecture (z/OS, JCL) to fellow students.\n- Facilitated workshops and hands-on sessions, helping students earn accredited IBM Z credentials, strengthening peer engagement with mainframe computing.\n\nCashier & Line Cook | McDonald's, Ottawa, Nov. 2025 – Present\n- Maintained 100% food safety compliance during peak service; communicated efficiently under pressure in a fast-paced team environment.\n- Collaborated with team members to meet fast-paced service demands and minimize wait times.\n- Managed multiple tasks simultaneously, including order taking, food preparation, and order assembly.\n- Adapted quickly to changing priorities, including peak hours and shifting responsibilities.\n- Consistently met performance expectations for speed, accuracy, and teamwork.\n\nCERTIFICATIONS\nIBM Z Xplore Fundamentals Badge (2026)\nIBM Z Xplore Concepts Badge (2026)",
+  prefs: {
+    ...DEFAULT_PREFS,
+    scholarship: {
+      ...DEFAULT_SCHOLARSHIP,
+      gpa: 3.77,
+      nationality: 'Ethiopian',
+      residency: 'international',
+      school: 'Algonquin College',
+      program: 'Computer Engineering Technology – Computing Science',
+      level: 'college diploma',
+      activities: 'IBM Z Student Ambassador & Club Leader at Algonquin College — runs workshops and helps students earn IBM Z credentials; part-time work at McDonald\'s Ottawa',
+      financialNeed: true,
+    },
+  },
 };
 
 /* ------------------------------- rate limit ------------------------------ */
@@ -186,6 +203,21 @@ async function api(req, res, url) {
       prefs.availability = str(prefs.availability, 500);
       prefs.remoteOnly = !!prefs.remoteOnly;
     }
+    // Scholarship profile (Settings → Scholarship profile card).
+    if (body.prefs && typeof body.prefs.scholarship === 'object' && body.prefs.scholarship) {
+      const sc = { ...DEFAULT_SCHOLARSHIP, ...(cur.prefs.scholarship || {}), ...body.prefs.scholarship };
+      prefs.scholarship = {
+        gpa: sc.gpa === null || sc.gpa === '' || sc.gpa === undefined ? null : Math.max(0, Math.min(4.3, Number(sc.gpa) || 0)) || null,
+        nationality: str(sc.nationality, 80),
+        residency: ['international', 'citizen', 'permanent-resident', 'other'].includes(sc.residency) ? sc.residency : 'international',
+        school: str(sc.school, 160),
+        program: str(sc.program, 200),
+        level: str(sc.level, 80),
+        activities: str(sc.activities, 2000),
+        financialNeed: !!sc.financialNeed,
+        feeds: Array.isArray(sc.feeds) ? sc.feeds.slice(0, 10).map((x) => str(x, 500)).filter(Boolean) : [],
+      };
+    }
     db.prepare("UPDATE profiles SET name = ?, headline = ?, resume_text = ?, skills = ?, prefs_json = ?, updated_at = datetime('now') WHERE user_id = ?")
       .run(name, headline, resume, JSON.stringify(skills), JSON.stringify(prefs), s.userId);
     return sendJson(res, 200, { profile: getProfile(s.userId) });
@@ -234,7 +266,95 @@ async function api(req, res, url) {
     const s = requireAuth(req, res); if (!s) return;
     if (!requireCsrf(req, res, s)) return;
     const result = await runPipeline(s.userId);
+    try { result.scholarships = await runScholarshipScan(s.userId); }
+    catch (e) { result.scholarships = { error: e.message }; }
     return sendJson(res, 200, result);
+  }
+
+  /* ---------------------------- scholarships ---------------------------- */
+  if (p === '/api/scholarships/run' && method === 'POST') {
+    const s = requireAuth(req, res); if (!s) return;
+    if (!requireCsrf(req, res, s)) return;
+    const result = await runScholarshipScan(s.userId);
+    return sendJson(res, 200, result);
+  }
+
+  if (p === '/api/scholarships' && method === 'GET') {
+    const s = requireAuth(req, res); if (!s) return;
+    const profile = getProfile(s.userId);
+    const min = Math.max(0, Math.min(100, Number(url.searchParams.get('minScore') ?? (profile.prefs.minScore || 0)) || 0));
+    return sendJson(res, 200, { scholarships: topScholarships(s.userId, 60, min) });
+  }
+
+  const schMatch = p.match(/^\/api\/scholarships\/([a-f0-9]{32})$/);
+  if (schMatch && method === 'GET') {
+    const s = requireAuth(req, res); if (!s) return;
+    const sch = db.prepare('SELECT * FROM scholarships WHERE id = ?').get(schMatch[1]);
+    if (!sch) return sendJson(res, 404, { error: 'Scholarship not found' });
+    const match = db.prepare('SELECT * FROM scholarship_matches WHERE user_id = ? AND scholarship_id = ?').get(s.userId, sch.id);
+    const docs = db.prepare('SELECT kind, content, created_at FROM scholarship_documents WHERE user_id = ? AND scholarship_id = ? ORDER BY created_at DESC').all(s.userId, sch.id);
+    const latest = {};
+    for (const d of docs) if (!latest[d.kind]) latest[d.kind] = d;
+    return sendJson(res, 200, {
+      scholarship: sch,
+      match: match ? { ...match, reasons: JSON.parse(match.reasons || '[]'), flags: JSON.parse(match.flags || '[]'), essay_required: !!match.essay_required } : null,
+      documents: latest,
+    });
+  }
+
+  const schGen = p.match(/^\/api\/scholarships\/([a-f0-9]{32})\/generate$/);
+  if (schGen && method === 'POST') {
+    const s = requireAuth(req, res); if (!s) return;
+    if (!requireCsrf(req, res, s)) return;
+    const sch = db.prepare('SELECT * FROM scholarships WHERE id = ?').get(schGen[1]);
+    if (!sch) return sendJson(res, 404, { error: 'Scholarship not found' });
+    const matchRow = db.prepare('SELECT * FROM scholarship_matches WHERE user_id = ? AND scholarship_id = ?').get(s.userId, sch.id);
+    const match = matchRow ? { reasons: JSON.parse(matchRow.reasons || '[]'), flags: JSON.parse(matchRow.flags || '[]'), essayRequired: !!matchRow.essay_required } : null;
+    const profile = getProfile(s.userId);
+    const docs = generateScholarshipDocs(profile, sch, match);
+    const ins = db.prepare('INSERT INTO scholarship_documents (user_id, scholarship_id, kind, content) VALUES (?, ?, ?, ?)');
+    for (const [kind, content] of Object.entries(docs)) ins.run(s.userId, sch.id, kind, content);
+    return sendJson(res, 200, { documents: docs });
+  }
+
+  if (p === '/api/scholarship-applications' && method === 'GET') {
+    const s = requireAuth(req, res); if (!s) return;
+    const apps = db.prepare('SELECT * FROM scholarship_applications WHERE user_id = ? ORDER BY updated_at DESC').all(s.userId);
+    return sendJson(res, 200, { applications: apps });
+  }
+
+  const SCH_STATUSES = ['saved', 'drafting', 'submitted', 'awarded', 'rejected', 'closed'];
+  if (p === '/api/scholarship-applications' && method === 'POST') {
+    const s = requireAuth(req, res); if (!s) return;
+    if (!requireCsrf(req, res, s)) return;
+    const body = await readBody(req);
+    const title = str(body.title, 300);
+    if (!title) return sendJson(res, 400, { error: 'Title is required' });
+    const schId = typeof body.scholarship_id === 'string' && /^[a-f0-9]{32}$/.test(body.scholarship_id) ? body.scholarship_id : null;
+    const info = db.prepare('INSERT INTO scholarship_applications (user_id, scholarship_id, title, provider, url, status, deadline) VALUES (?, ?, ?, ?, ?, ?, ?)')
+      .run(s.userId, schId, title, str(body.provider, 200), str(body.url, 1000),
+        SCH_STATUSES.includes(body.status) ? body.status : 'saved',
+        typeof body.deadline === 'string' ? body.deadline.slice(0, 20) : null);
+    return sendJson(res, 201, { id: Number(info.lastInsertRowid) });
+  }
+
+  const schAppMatch = p.match(/^\/api\/scholarship-applications\/(\d+)$/);
+  if (schAppMatch && method === 'PUT') {
+    const s = requireAuth(req, res); if (!s) return;
+    if (!requireCsrf(req, res, s)) return;
+    const body = await readBody(req);
+    const app = db.prepare('SELECT * FROM scholarship_applications WHERE id = ? AND user_id = ?').get(Number(schAppMatch[1]), s.userId);
+    if (!app) return sendJson(res, 404, { error: 'Application not found' });
+    const status = SCH_STATUSES.includes(body.status) ? body.status : app.status;
+    db.prepare("UPDATE scholarship_applications SET status = ?, notes = ?, updated_at = datetime('now') WHERE id = ? AND user_id = ?")
+      .run(status, str(body.notes ?? app.notes, 4000), app.id, s.userId);
+    return sendJson(res, 200, { ok: true });
+  }
+  if (schAppMatch && method === 'DELETE') {
+    const s = requireAuth(req, res); if (!s) return;
+    if (!requireCsrf(req, res, s)) return;
+    db.prepare('DELETE FROM scholarship_applications WHERE id = ? AND user_id = ?').run(Number(schAppMatch[1]), s.userId);
+    return sendJson(res, 200, { ok: true });
   }
 
   if (p === '/api/applications' && method === 'GET') {
@@ -297,6 +417,13 @@ function serveStatic(req, res, url) {
 
 const server = http.createServer(async (req, res) => {
   securityHeaders(res);
+  // Any successful data-changing API call schedules a backup snapshot, so a
+  // host redeploy can never take the latest state with it (lib/backup.js).
+  res.on('finish', () => {
+    if (req.method !== 'GET' && req.url.startsWith('/api/')
+      && !req.url.startsWith('/api/login') && !req.url.startsWith('/api/logout')
+      && res.statusCode < 300) backup.markDirty();
+  });
   try {
     const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
     if (url.pathname.startsWith('/api/')) await api(req, res, url);
@@ -327,11 +454,28 @@ setInterval(async () => {
       lastRunDay.set(u.id, today);
       if (done) continue;
       console.log(`[jobpilot] overnight run for user ${u.id}`);
-      runPipeline(u.id).catch((e) => console.error('[jobpilot] scheduled run failed:', e.message));
+      (async () => {
+        await runPipeline(u.id);
+        await runScholarshipScan(u.id).catch((e) => console.error('[jobpilot] scholarship scan failed:', e.message));
+      })().catch((e) => console.error('[jobpilot] scheduled run failed:', e.message));
     }
   } catch (e) { console.error('[jobpilot] scheduler error:', e.message); }
 }, 60000);
 
-server.listen(PORT, () => {
-  console.log(`JobPilot running at http://localhost:${PORT}`);
-});
+/* ------------------------------ boot sequence ----------------------------- */
+// Restore the GitHub backup first if this is a fresh/wiped disk (the free-
+// tier redeploy case), then start listening. A last-chance backup flush runs
+// on shutdown signals, which is what hosts send before a redeploy.
+for (const sig of ['SIGTERM', 'SIGINT']) {
+  process.on(sig, async () => {
+    try { await Promise.race([backup.flushNow(), new Promise((r) => setTimeout(r, 6000))]); } catch { /* best effort */ }
+    process.exit(0);
+  });
+}
+
+(async () => {
+  await backup.restoreIfEmpty().catch((e) => console.error('[jobpilot] restore error:', e.message));
+  server.listen(PORT, () => {
+    console.log(`JobPilot running at http://localhost:${PORT}`);
+  });
+})();
