@@ -1,0 +1,35 @@
+name: Nightly job scan
+
+# Runs the scraper on GitHub's machines and commits a fresh report to docs/.
+# GitHub Pages can then serve docs/ as your morning report page.
+# Schedule: 07:00 UTC = 2:00 a.m. EST / 3:00 a.m. EDT.
+on:
+  schedule:
+    - cron: "0 7 * * *"
+  workflow_dispatch: {}   # lets you run it by hand from the Actions tab
+
+permissions:
+  contents: write          # needed only so the job can commit the report
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Run JobPilot pipeline
+        run: node scripts/scrape-ci.js
+        env:
+          # Optional free-tier AI keys for nicer cover letters in the full app.
+          # NEVER paste keys here — add them under Settings → Secrets → Actions.
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      - name: Commit report
+        run: |
+          git config user.name "jobpilot-bot"
+          git config user.email "jobpilot-bot@users.noreply.github.com"
+          git add docs/
+          git diff --cached --quiet || git commit -m "Nightly job report $(date -u +%F)"
+          git push

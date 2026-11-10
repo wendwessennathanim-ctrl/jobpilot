@@ -1,0 +1,8 @@
+node_modules/
+data/*.db
+data/*.db-journal
+data/*.db-wal
+.env
+profile.json
+*.log
+.DS_Store
